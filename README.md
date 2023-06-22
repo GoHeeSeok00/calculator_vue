@@ -1,24 +1,25 @@
-# calculator
+# Calculator App (quasar-project)
 
-## Project setup
-```
-yarn install
-```
+계산기 프로젝트
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+1. [계산기] 간단한 사칙연산이 가능한 계산기을 구현한다.
+   vue3와 quasar 프레임워크를 사용해 구현.
 
-### Compiles and minifies for production
-```
-yarn build
+## Install the dependencies
+
+```bash
+yarn
 ```
 
-### Lints and fixes files
-```
-yarn lint
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
+
+```bash
+quasar dev
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Build the app for production
+
+```bash
+quasar build
+```
+
