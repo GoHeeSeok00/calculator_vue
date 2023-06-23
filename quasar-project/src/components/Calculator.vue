@@ -5,7 +5,7 @@
       <q-input rounded outlined readonly v-model="dashboard" />
     </div>
     <div>
-      <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="resetDashboard" />
+      <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="reset" />
       <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="deleteLastOne" />
       <q-btn class="glossy cal-btn" rounded color="teal" label="*" @click="multiplicationSign" />
     </div>
@@ -53,12 +53,9 @@ export default defineComponent({
       } else {
         dashboard.value += str
       }
-
-      console.log('dashboard ', dashboard.value)
     }
 
     const pushZero = () => {
-      console.log(dashboard.value[0])
       if (dashboard.value[0] !== '0') {
         dashboard.value += '0'
       } else {
@@ -66,25 +63,27 @@ export default defineComponent({
           dashboard.value += '0'
         }
       }
-      console.log('dashboard ', dashboard.value)
     }
 
     const pushDecimalPoint = () => {
-      console.log(dashboard.value.indexOf('.'))
       if (dashboard.value !== '' && dashboard.value.indexOf('.') === -1) {
         dashboard.value += '.'
-        console.log('dashboard ', dashboard.value)
       }
     }
 
-    const resetDashboard = () => {
-      dashboard.value = ''
-      console.log('dashboard ', dashboard.value)
+    const reset = () => {
+      dashboard.value = '0'
+      cleanMemoryAndLastSign()
     }
 
     const deleteLastOne = () => {
-      dashboard.value = dashboard.value.slice(0, -1)
-      console.log('dashboard ', dashboard.value)
+      if (dashboard.value[0] !== '0' || dashboard.value.length !== 1) {
+        dashboard.value = dashboard.value.slice(0, -1)
+      }
+
+      if (dashboard.value === '') {
+        dashboard.value = '0'
+      }
     }
 
     const plusSign = () => {
@@ -139,7 +138,7 @@ export default defineComponent({
     }
 
     const state = { dashboard }
-    const action = { pushNumber, pushZero, pushDecimalPoint, resetDashboard, deleteLastOne, plusSign, minusSign, multiplicationSign, divisionSign, calculate }
+    const action = { pushNumber, pushZero, pushDecimalPoint, reset, deleteLastOne, plusSign, minusSign, multiplicationSign, divisionSign, calculate }
     return { ...state, ...action }
   }
 })
