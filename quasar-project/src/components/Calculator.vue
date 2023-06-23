@@ -7,12 +7,12 @@
     <div>
       <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="resetDashboard" />
       <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="deleteLastOne" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="*" />
+      <q-btn class="glossy cal-btn" rounded color="teal" label="*" @click="multiplicationSign" />
     </div>
     <div>
-      <q-btn class="glossy cal-btn" rounded color="teal" label="+" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="-" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="%" />
+      <q-btn class="glossy cal-btn" rounded color="teal" label="+" @click="plusSign" />
+      <q-btn class="glossy cal-btn" rounded color="teal" label="-" @click="minusSign" />
+      <q-btn class="glossy cal-btn" rounded color="teal" label="÷" @click="divisionSign" />
     </div>
     <div>
       <q-btn class="glossy cal-btn" rounded color="primary" label="7" @click="pushNumber('7')" />
@@ -32,7 +32,7 @@
     <div>
       <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="pushZero()" />
       <q-btn class="glossy cal-btn" rounded color="primary" label="." @click="pushDecimalPoint()" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="=" />
+      <q-btn class="glossy cal-btn" rounded color="teal" label="=" @click="calculate" />
     </div>
   </div>
 </template>
@@ -53,8 +53,13 @@ export default defineComponent({
     }
 
     const pushZero = () => {
-      if (dashboard.value !== '') {
+      console.log(dashboard.value[0])
+      if (dashboard.value[0] !== '0') {
         dashboard.value += '0'
+      } else {
+        if (dashboard.value.length !== 1) {
+          dashboard.value += '0'
+        }
       }
       console.log('dashboard ', dashboard.value)
     }
@@ -101,8 +106,35 @@ export default defineComponent({
       lastSign.value = '/'
     }
 
+    const calculate = () => {
+      const targetA = Number(memory.value)
+      const targetB = Number(dashboard.value)
+      console.log('target ', targetA, targetB)
+
+      if (lastSign.value !== '') {
+        if (lastSign.value === '+') {
+          dashboard.value = (targetA + targetB).toString()
+          cleanMemoryAndLastSign()
+        } else if (lastSign.value === '-') {
+          dashboard.value = (targetA - targetB).toString()
+          cleanMemoryAndLastSign()
+        } else if (lastSign.value === '*') {
+          dashboard.value = (targetA * targetB).toString()
+          cleanMemoryAndLastSign()
+        } else if (lastSign.value === '/') {
+          dashboard.value = (targetA / targetB).toString()
+          cleanMemoryAndLastSign()
+        }
+      }
+    }
+
+    const cleanMemoryAndLastSign = () => {
+      memory.value = ''
+      lastSign.value = ''
+    }
+
     const state = { dashboard }
-    const action = { pushNumber, pushZero, pushDecimalPoint, resetDashboard, deleteLastOne, plusSign, minusSign, multiplicationSign, divisionSign }
+    const action = { pushNumber, pushZero, pushDecimalPoint, resetDashboard, deleteLastOne, plusSign, minusSign, multiplicationSign, divisionSign, calculate }
     return { ...state, ...action }
   }
 })
