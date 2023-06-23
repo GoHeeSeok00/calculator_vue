@@ -43,12 +43,17 @@ import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'VictorCalculator',
   setup() {
-    const dashboard = ref<string>('')
+    const dashboard = ref<string>('0')
     const memory = ref<string>('')
     const lastSign = ref<string>('')
 
     const pushNumber = (str: string) => {
-      dashboard.value += str
+      if (dashboard.value[0] === '0' && dashboard.value.length === 1) {
+        dashboard.value = str
+      } else {
+        dashboard.value += str
+      }
+
       console.log('dashboard ', dashboard.value)
     }
 
@@ -84,25 +89,25 @@ export default defineComponent({
 
     const plusSign = () => {
       memory.value = dashboard.value
-      dashboard.value = ''
+      dashboard.value = '0'
       lastSign.value = '+'
     }
 
     const minusSign = () => {
       memory.value = dashboard.value
-      dashboard.value = ''
+      dashboard.value = '0'
       lastSign.value = '-'
     }
 
     const multiplicationSign = () => {
       memory.value = dashboard.value
-      dashboard.value = ''
+      dashboard.value = '0'
       lastSign.value = '*'
     }
 
     const divisionSign = () => {
       memory.value = dashboard.value
-      dashboard.value = ''
+      dashboard.value = '0'
       lastSign.value = '/'
     }
 
