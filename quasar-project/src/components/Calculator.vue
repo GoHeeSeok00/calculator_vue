@@ -1,38 +1,39 @@
 <template>
-  <div>
-    <div>계산기</div>
-    <div>
-      <q-input rounded outlined readonly v-model="dashboard" />
+  <div class="calculator">
+    <div class="display">
+      <q-input outlined readonly dense input-class="text-right" v-model="dashboard" />
     </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="reset" />
-      <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="deleteLastOne" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="*" @click="multiplicationSign" />
-    </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="teal" label="+" @click="plusSign" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="-" @click="minusSign" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="÷" @click="divisionSign" />
-    </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="primary" label="7" @click="pushNumber('7')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="8" @click="pushNumber('8')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="9" @click="pushNumber('9')" />
-    </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="primary" label="4" @click="pushNumber('4')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="5" @click="pushNumber('5')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="6" @click="pushNumber('6')" />
-    </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="primary" label="1" @click="pushNumber('1')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="2" @click="pushNumber('2')" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="3" @click="pushNumber('3')" />
-    </div>
-    <div>
-      <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="pushZero()" />
-      <q-btn class="glossy cal-btn" rounded color="primary" label="." @click="pushDecimalPoint()" />
-      <q-btn class="glossy cal-btn" rounded color="teal" label="=" @click="calculate" />
+    <div class="button_container">
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="reset" />
+        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="deleteLastOne" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="×" @click="multiplicationSign" />
+      </div>
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="teal" label="+" @click="plusSign" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="-" @click="minusSign" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="÷" @click="divisionSign" />
+      </div>
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="primary" label="7" @click="pushNumber('7')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="8" @click="pushNumber('8')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="9" @click="pushNumber('9')" />
+      </div>
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="primary" label="4" @click="pushNumber('4')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="5" @click="pushNumber('5')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="6" @click="pushNumber('6')" />
+      </div>
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="primary" label="1" @click="pushNumber('1')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="2" @click="pushNumber('2')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="3" @click="pushNumber('3')" />
+      </div>
+      <div class="button_content">
+        <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="pushZero()" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="." @click="pushDecimalPoint()" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="=" @click="calculate" />
+      </div>
     </div>
   </div>
 </template>
@@ -111,24 +112,59 @@ export default defineComponent({
     }
 
     const calculate = () => {
-      const targetA = Number(memory.value)
-      const targetB = Number(dashboard.value)
-      console.log('target ', targetA, targetB)
+      try {
+        if (lastSign.value !== '') {
+          let pow = 1
 
-      if (lastSign.value !== '') {
-        if (lastSign.value === '+') {
-          dashboard.value = (targetA + targetB).toString()
+          const memoryDotIndex = memory.value.indexOf('.')
+          const dashboardDotIndex = dashboard.value.indexOf('.')
+
+          if (memoryDotIndex !== -1 && memoryDotIndex >= dashboardDotIndex) {
+            pow = Math.pow(10, memory.value.length - memoryDotIndex - 1)
+          } else if (memoryDotIndex !== -1 && memoryDotIndex < dashboardDotIndex) {
+            pow = Math.pow(10, dashboard.value.length - dashboardDotIndex - 1)
+          }
+
+          const targetA = Number(memory.value) * pow
+          const targetB = Number(dashboard.value) * pow
+          console.log(pow, 'target ', targetA, lastSign.value, targetB)
+          // 연산
+          const calResult = calNaturalNumber(targetA, targetB, pow)
+          // 메모리, 연산 초기화
           cleanMemoryAndLastSign()
-        } else if (lastSign.value === '-') {
-          dashboard.value = (targetA - targetB).toString()
-          cleanMemoryAndLastSign()
-        } else if (lastSign.value === '*') {
-          dashboard.value = (targetA * targetB).toString()
-          cleanMemoryAndLastSign()
-        } else if (lastSign.value === '/') {
-          dashboard.value = (targetA / targetB).toString()
-          cleanMemoryAndLastSign()
+
+          console.log('isnon', isNaN(calResult))
+          if (isNaN(calResult)) {
+            dashboard.value = '숫자아님'
+          } else {
+            dashboard.value = calResult.toString()
+          }
         }
+      } catch (e) {
+        console.log('calculate', e)
+      }
+    }
+
+    const calNaturalNumber = (targetA: number, targetB: number, pow: number) => {
+      try {
+        if (lastSign.value === '+') {
+          return (targetA + targetB) / pow
+        } else if (lastSign.value === '-') {
+          return (targetA - targetB) / pow
+        } else if (lastSign.value === '*') {
+          return (targetA * targetB) / pow ** 2
+        } else if (lastSign.value === '/') {
+          if (targetB !== 0) {
+            return targetA / targetB
+          } else {
+            return NaN
+          }
+        } else {
+          return 0
+        }
+      } catch (e) {
+        console.log('calNaturalNumber', e)
+        return 0
       }
     }
 
@@ -149,5 +185,20 @@ export default defineComponent({
   margin: 0.5rem;
   width: 5rem;
   height: 1rem;
+}
+
+.display {
+  background-color: white;
+  margin: 1.5rem 1.5rem 1rem 1.5rem;
+}
+
+.button_container {
+  margin-bottom: 0.5rem;
+}
+
+.calculator {
+  background-color: rgb(255, 251, 245);
+  border: 1px solid black;
+  border-radius: 5%;
 }
 </style>
