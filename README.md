@@ -6,6 +6,8 @@
    
    vue3와 quasar 프레임워크를 사용해 구현.
 
+   소스 코드 : `quasar-project/src/components/Calculator.vue`
+
 ## Install the dependencies
 
 ```bash
