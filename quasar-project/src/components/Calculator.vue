@@ -198,6 +198,8 @@ export default defineComponent({
         deleteLastOne()
       } else if (keyCode === 190) {
         pushDecimalPoint()
+      } else {
+        console.log('Hi i am calculator')
       }
     }
 
