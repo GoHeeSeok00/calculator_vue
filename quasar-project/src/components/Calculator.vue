@@ -27,7 +27,7 @@
       <div class="button_content">
         <q-btn class="glossy cal-btn" rounded color="primary" label="1" @click="pushNumber('1')" />
         <q-btn class="glossy cal-btn" rounded color="primary" label="2" @click="pushNumber('2')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="3" @click="pushNumber('3')" />
+        <q-btn ref="btn3" class="glossy cal-btn" rounded color="primary" label="3" @click="pushNumber('3')" />
       </div>
       <div class="button_content">
         <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="pushZero()" />
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 
 export default defineComponent({
   name: 'VictorCalculator',
@@ -173,8 +173,56 @@ export default defineComponent({
       lastSign.value = ''
     }
 
+    const handleKeyDown = (event: any) => {
+      const key = event.key
+      const keyCode = event.keyCode
+      console.log('key', key)
+      console.log('keyCode', keyCode)
+      if (/^[1-9]$/.test(key)) {
+        pushNumber(key)
+      } else if (/^0$/.test(key)) {
+        pushZero()
+      } else if (/\+/.test(key)) {
+        plusSign()
+      } else if (/\-/.test(key)) {
+        minusSign()
+      } else if (/\*/.test(key)) {
+        multiplicationSign()
+      } else if (/\//.test(key)) {
+        divisionSign()
+      } else if (/\=/.test(key) || keyCode === 13) {
+        calculate()
+      } else if (keyCode === 27) {
+        reset()
+      } else if (keyCode === 8) {
+        deleteLastOne()
+      } else if (keyCode === 190) {
+        pushDecimalPoint()
+      }
+    }
+
+    onMounted(() => {
+      window.addEventListener('keydown', handleKeyDown)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('keydown', handleKeyDown)
+    })
+
     const state = { dashboard }
-    const action = { pushNumber, pushZero, pushDecimalPoint, reset, deleteLastOne, plusSign, minusSign, multiplicationSign, divisionSign, calculate }
+    const action = {
+      pushNumber,
+      pushZero,
+      pushDecimalPoint,
+      reset,
+      deleteLastOne,
+      plusSign,
+      minusSign,
+      multiplicationSign,
+      divisionSign,
+      calculate,
+      handleKeyDown
+    }
     return { ...state, ...action }
   }
 })
