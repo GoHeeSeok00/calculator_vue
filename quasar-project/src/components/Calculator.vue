@@ -176,8 +176,6 @@ export default defineComponent({
     const handleKeyDown = (event: any) => {
       const key = event.key
       const keyCode = event.keyCode
-      console.log('key', key)
-      console.log('keyCode', keyCode)
       if (/^[1-9]$/.test(key)) {
         pushNumber(key)
       } else if (/^0$/.test(key)) {
