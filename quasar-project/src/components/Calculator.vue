@@ -5,34 +5,34 @@
     </div>
     <div class="button_container">
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="reset" />
-        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="deleteLastOne" />
-        <q-btn class="glossy cal-btn" rounded color="teal" label="×" @click="multiplicationSign" />
+        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="C" @click="calculator('C')" />
+        <q-btn class="glossy cal-btn" rounded color="deep-orange" label="<-" @click="calculator('<')" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="×" @click="calculator('*')" />
       </div>
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="teal" label="+" @click="plusSign" />
-        <q-btn class="glossy cal-btn" rounded color="teal" label="-" @click="minusSign" />
-        <q-btn class="glossy cal-btn" rounded color="teal" label="÷" @click="divisionSign" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="+" @click="calculator('+')" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="-" @click="calculator('-')" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="÷" @click="calculator('/')" />
       </div>
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="primary" label="7" @click="pushNumber('7')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="8" @click="pushNumber('8')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="9" @click="pushNumber('9')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="7" @click="calculator('7')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="8" @click="calculator('8')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="9" @click="calculator('9')" />
       </div>
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="primary" label="4" @click="pushNumber('4')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="5" @click="pushNumber('5')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="6" @click="pushNumber('6')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="4" @click="calculator('4')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="5" @click="calculator('5')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="6" @click="calculator('6')" />
       </div>
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="primary" label="1" @click="pushNumber('1')" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="2" @click="pushNumber('2')" />
-        <q-btn ref="btn3" class="glossy cal-btn" rounded color="primary" label="3" @click="pushNumber('3')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="1" @click="calculator('1')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="2" @click="calculator('2')" />
+        <q-btn ref="btn3" class="glossy cal-btn" rounded color="primary" label="3" @click="calculator('3')" />
       </div>
       <div class="button_content">
-        <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="pushZero()" />
-        <q-btn class="glossy cal-btn" rounded color="primary" label="." @click="pushDecimalPoint()" />
-        <q-btn class="glossy cal-btn" rounded color="teal" label="=" @click="calculate" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="0" @click="calculator('0')" />
+        <q-btn class="glossy cal-btn" rounded color="primary" label="." @click="calculator('.')" />
+        <q-btn class="glossy cal-btn" rounded color="teal" label="=" @click="calculator('=')" />
       </div>
     </div>
   </div>
@@ -47,6 +47,31 @@ export default defineComponent({
     const dashboard = ref<string>('0')
     const memory = ref<string>('')
     const lastSign = ref<string>('')
+    let history = ''
+
+    const NUMBER_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    const SIGN_LIST = ['+', '-', '*', '/']
+
+    const calculator = (input: string) => {
+      if (input === '0') {
+        pushZero()
+      } else if (input === 'C') {
+        reset()
+      } else if (input === '.') {
+        pushDecimalPoint()
+      } else if (input === '<') {
+        deleteLastOne()
+      } else if (input === '=') {
+        calculate()
+      } else if (NUMBER_LIST.includes(input)) {
+        pushNumber(input)
+      } else if (SIGN_LIST.includes(input)) {
+        sign(input)
+      }
+
+      history += input
+      console.log(history)
+    }
 
     const pushNumber = (str: string) => {
       if (dashboard.value[0] === '0' && dashboard.value.length === 1) {
@@ -87,27 +112,36 @@ export default defineComponent({
       }
     }
 
-    const plusSign = () => {
+    const sign = (sign: string) => {
+      history += sign
+      console.log(history, history.slice(-1))
       memory.value = dashboard.value
       dashboard.value = '0'
+
+      if (sign === '+') {
+        plusSign()
+      } else if (sign === '-') {
+        minusSign()
+      } else if (sign === '*') {
+        multiplicationSign()
+      } else if (sign === '/') {
+        divisionSign()
+      }
+    }
+
+    const plusSign = () => {
       lastSign.value = '+'
     }
 
     const minusSign = () => {
-      memory.value = dashboard.value
-      dashboard.value = '0'
       lastSign.value = '-'
     }
 
     const multiplicationSign = () => {
-      memory.value = dashboard.value
-      dashboard.value = '0'
       lastSign.value = '*'
     }
 
     const divisionSign = () => {
-      memory.value = dashboard.value
-      dashboard.value = '0'
       lastSign.value = '/'
     }
 
@@ -177,25 +211,25 @@ export default defineComponent({
       const key = event.key
       const keyCode = event.keyCode
       if (/^[1-9]$/.test(key)) {
-        pushNumber(key)
+        calculator(key)
       } else if (/^0$/.test(key)) {
-        pushZero()
+        calculator('0')
       } else if (/\+/.test(key)) {
-        plusSign()
+        calculator('+')
       } else if (/\-/.test(key)) {
-        minusSign()
+        calculator('-')
       } else if (/\*/.test(key)) {
-        multiplicationSign()
+        calculator('*')
       } else if (/\//.test(key)) {
-        divisionSign()
+        calculator('/')
       } else if (/\=/.test(key) || keyCode === 13) {
-        calculate()
+        calculator('=')
       } else if (keyCode === 27) {
-        reset()
+        calculator('C')
       } else if (keyCode === 8) {
-        deleteLastOne()
-      } else if (keyCode === 190) {
-        pushDecimalPoint()
+        calculator('<')
+      } else if (keyCode === 190 || keyCode === 110) {
+        calculator('.')
       } else {
         console.log('Hi i am calculator')
       }
@@ -210,19 +244,7 @@ export default defineComponent({
     })
 
     const state = { dashboard }
-    const action = {
-      pushNumber,
-      pushZero,
-      pushDecimalPoint,
-      reset,
-      deleteLastOne,
-      plusSign,
-      minusSign,
-      multiplicationSign,
-      divisionSign,
-      calculate,
-      handleKeyDown
-    }
+    const action = { calculator }
     return { ...state, ...action }
   }
 })
