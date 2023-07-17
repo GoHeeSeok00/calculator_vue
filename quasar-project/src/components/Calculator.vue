@@ -47,6 +47,7 @@ export default defineComponent({
     const dashboard = ref<string>('0')
     const memory = ref<string>('')
     const lastSign = ref<string>('')
+    let isMemory = false
     let history = ''
 
     const NUMBER_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -55,6 +56,7 @@ export default defineComponent({
     const calculator = (input: string) => {
       if (input === '0') {
         pushZero()
+        history += input
       } else if (input === 'C') {
         reset()
       } else if (input === '.') {
@@ -63,17 +65,23 @@ export default defineComponent({
         deleteLastOne()
       } else if (input === '=') {
         calculate()
+        isMemory = true
+        history += input
       } else if (NUMBER_LIST.includes(input)) {
         pushNumber(input)
+        history += input
       } else if (SIGN_LIST.includes(input)) {
         sign(input)
+        history += input
       }
-
-      history += input
       console.log(history)
     }
 
     const pushNumber = (str: string) => {
+      if (isMemory) {
+        dashboard.value = '0'
+        isMemory = false
+      }
       if (dashboard.value[0] === '0' && dashboard.value.length === 1) {
         dashboard.value = str
       } else {
@@ -82,6 +90,10 @@ export default defineComponent({
     }
 
     const pushZero = () => {
+      if (isMemory) {
+        dashboard.value = '0'
+        isMemory = false
+      }
       if (dashboard.value[0] !== '0') {
         dashboard.value += '0'
       } else {
@@ -113,10 +125,13 @@ export default defineComponent({
     }
 
     const sign = (sign: string) => {
-      history += sign
-      console.log(history, history.slice(-1))
-      memory.value = dashboard.value
-      dashboard.value = '0'
+      if (!SIGN_LIST.includes(history.slice(-1))) {
+        if (lastSign.value) {
+          calculate()
+        }
+        memory.value = dashboard.value
+        isMemory = true
+      }
 
       if (sign === '+') {
         plusSign()
