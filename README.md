@@ -8,10 +8,27 @@
 
    소스 코드 : `quasar-project/src/components/Calculator.vue`
 
+
+2. UI
+   
+   ![image](https://github.com/GoHeeSeok00/calculator_vue/assets/96563183/0199ea01-0400-4a2f-a6ea-36e502eda43b)
+
+
+3. 사용 방법
+
+   마우스로 계산기 버튼을 직접 클릭하거나 키보드 입력을 통해 계산기를 사용할 수 있습니다.
+   
+
 ## Install the dependencies
 
 ```bash
 yarn
+```
+
+### Into project directory
+
+```bash
+cd quasar-project
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
